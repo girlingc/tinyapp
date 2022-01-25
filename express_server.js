@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
+const req = require("express/lib/request");
 app.use(bodyParser.urlencoded({extended: true}));
 
 // Generates random string for short URLs
@@ -15,7 +16,10 @@ const generateRandomString = () => {
   }
 };
 
+// Setting default engine as EJS
 app.set("view engine", "ejs");
+
+// Temporary Database until we create an actual one
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
@@ -52,8 +56,15 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
 app.post("/urls", (req, res) => {
-  console.log(req.body);
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL
+  res.redirect(`/urls/${shortURL}`);
   res.send("Ok");
 });
 
