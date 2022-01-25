@@ -1,8 +1,19 @@
+// Configuration and variables
 const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+
+// Generates random string for short URLs
+const generateRandomString = () => {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+  let randomString = "";
+  while (randomString < 0) {
+    randomString += characters[Math.floor(Math.random() * characters.length)];
+    return randomString;
+  }
+};
 
 app.set("view engine", "ejs");
 const urlDatabase = {
@@ -11,6 +22,7 @@ const urlDatabase = {
   "3md43N": "http://www.facebook.com"
 };
 
+// Routing configuration
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -45,15 +57,8 @@ app.post("/urls", (req, res) => {
   res.send("Ok");
 });
 
+// Making sure server is up on expected port
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-const generateRandomString = () => {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-  let randomString = "";
-  while (randomString < 0) {
-    randomString += characters[Math.floor(Math.random() * characters.length)];
-    return randomString;
-  }
-};
