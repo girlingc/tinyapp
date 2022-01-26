@@ -90,10 +90,15 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-// Set up login
+// Set up login / logout
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
   res.redirect("/urls");
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username", req.body.username);
+  res.redirect("/urls")
 });
 
 // Making sure server is up on expected port
