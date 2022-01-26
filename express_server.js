@@ -4,6 +4,8 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const req = require("express/lib/request");
+const cookieParser = require("cookie-parser")
+app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended: true}));
 
 // Generates random string for short URLs
@@ -84,6 +86,10 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+// Set up login
+app.post("/login", (req, res) => {
+
+});
 // Making sure server is up on expected port
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
