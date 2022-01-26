@@ -7,14 +7,17 @@ const req = require("express/lib/request");
 app.use(bodyParser.urlencoded({extended: true}));
 
 // Generates random string for short URLs
-const generateRandomString = () => {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-  let randomString = "";
-  while (randomString < 0) {
-    randomString += characters[Math.floor(Math.random() * characters.length)];
-    return randomString;
-  }
-};
+const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+function generateRandomString(length) {
+    let result = ' ';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+}
 
 // Setting default engine as EJS
 app.set("view engine", "ejs");
@@ -67,11 +70,18 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+// Adds random string to create short URL
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString();
+  const shortURL = generateRandomString(6);
   urlDatabase[shortURL] = req.body.longURL
   res.redirect(`/urls/${shortURL}`);
-  res.send("Ok");
+});
+
+// Update URL
+app.post("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = req.body.updatedURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 // Making sure server is up on expected port
