@@ -98,14 +98,13 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-//
+// Need to find bug of why if statement is not working
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-  if (longURL) {
+  if (urlDatabase[req.params.shortURL].longURL) {
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
-    res.statusCode = 404
-    res.send("<h2>404 Not Found<br>This short URL does not exist in our database</h2>")
+    res.statusCode = 404;
+    res.send('<h2>404 Not Found<br>This short URL does not exist in the database.</h2>')
   }
 });
 
