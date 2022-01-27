@@ -97,7 +97,12 @@ app.get("/urls/:shortURL", (req, res) => {
     longURL: urlDatabase[req.params.shortURL].longURL,
     user: users[req.cookies["user_id"]]
   };
-  res.render("urls_show", templateVars);
+  if (req.cookies["user_id"] === urlDatabase[templateVars.shortURL].userID) {
+    res.render("urls_show", templateVars);
+  } else {
+    res.statusCode = 404
+    res.send("<h2>404<br>You need to log in to access this URL</h2>")
+  }
 });
 
 //
@@ -133,7 +138,9 @@ app.get("/register", (req, res) => {
 
 // Deletes URL from database and redirects to /urls //
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
+  if (req.cookies["user_id"] === urlDatabase[req.params.shortURL].userID) {
+    delete urlDatabase[req.params.shortURL];
+  }
   res.redirect("/urls");
 });
 
