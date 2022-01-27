@@ -23,7 +23,16 @@ const generateRandomString = function(length) {
 // Setting default engine as EJS
 app.set("view engine", "ejs");
 
-const users = {}
+const users = {  "userRandomID": {
+  id: "userRandomID", 
+  email: "user@example.com", 
+  password: "purple-monkey-dinosaur"
+},
+"user2RandomID": {
+  id: "user2RandomID", 
+  email: "user2@example.com", 
+  password: "dishwasher-funk"
+}}
 // Temporary Database until we create an actual one
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -80,7 +89,12 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-app.get("/register", (req,res) => {
+app.get("/login", (req, res) => {
+  let templateVars = { user: users[req.cookies["user_id"]] };
+  res.render("urls_login", templateVars)
+})
+
+app.get("/register", (req, res) => {
   let templateVars = { user: users[req.cookies["user_id" ]]};
   res.render("urls_registration", templateVars);
 });
@@ -107,13 +121,18 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // Set up login / logout
 app.post("/login", (req, res) => {
-  res.cookie("user_id", req.body.userID);
-  res.redirect("/urls");
+  if (findEmail(req.body.email)) {
+    res.cookie("user_id", users.userID);
+    res.redirect("urls")
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id", req.body.userID);
   res.redirect("/urls")
+  console.log(users)
 });
 
 app.post("/register", (req, res) => {
