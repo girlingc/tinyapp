@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Generates random string for short URLs
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const generateRandomString = function(length) {
+const generateRandomString =(length) => {
   let result = ' ';
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
@@ -40,13 +40,13 @@ const urlDatabase = {
   "3md43N": "http://www.facebook.com"
 };
 
-const findEmail = (email) => {
-  for (let user in users) {
-    if (users[user].email === email) {
-      return true;
+const findEmail = (email, database) => {
+  for (let user in database) {
+    if (database[user].email === email) {
+      return database[user];
     }
   }
-  return false;
+  return undefined;
 };
 
 // Routing configuration
@@ -121,11 +121,18 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // Set up login / logout
 app.post("/login", (req, res) => {
-  if (findEmail(req.body.email)) {
-    res.cookie("user_id", users.userID);
-    res.redirect("urls")
+  const user = findEmail(req.body.email, users);
+  if (user) {
+    if (req.body.password === user.password) {
+      res.cookie("user_id", user.userID);
+      res.redirect("/urls");
+    } else {
+      res.statusCode = 403;
+      res.send("<h2>403<br>You entered the wrong password</h2>")
+    }
   } else {
-    res.redirect("/login");
+    res.statusCode = 403;
+    res.send("<h2>403<br>This email address is not registered</h2>")
   }
 });
 
@@ -137,8 +144,7 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
   if (req.body.email && req.body.password) {
-
-    if (!findEmail(req.body.email)) {
+    if (!findEmail(req.body.email, users)) {
       const userID = generateRandomString(4);
       users[userID] = {
         userID,
@@ -149,11 +155,11 @@ app.post("/register", (req, res) => {
       res.redirect("/urls");
     } else {
       res.statusCode = 400;
-      res.send("<h2>400 Bad Request<br>That email has already been registered</h2>")
+      res.send("<h2>400 Bad Request<br>That Email has already been registered</h2>")
     }
   } else {
     res.statusCode = 400;
-    res.send("<h2>400 Bad Request<br>Please enter a valid username and password</h2>")
+    res.send("<h2>400 Bad Request<br>Please enter a valid Email and Password</h2>")
   }
 });
 
