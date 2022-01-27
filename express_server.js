@@ -54,6 +54,17 @@ const findEmail = (email, database) => {
   return undefined;
 };
 
+const userURLs = (id) => {
+  let urls = {};
+
+  for (const url in urlDatabase) {
+    if (urlDatabase[url].userID === id) {
+      urls[url] = urlDatabase[url]
+    }
+  }
+  return urls
+}
+
 // Routing configuration // 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -61,8 +72,9 @@ app.get("/", (req, res) => {
 
 //
 app.get("/urls", (req, res) => {
+  const myURLs = userURLs(req.cookies["user_id"]);
   let templateVars = {
-    urls: urlDatabase,
+    urls: myURLs,
     user: users[req.cookies["user_id"]]
   };
   res.render("urls_index", templateVars);
