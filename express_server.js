@@ -23,6 +23,18 @@ const generateRandomString = function(length) {
 // Setting default engine as EJS
 app.set("view engine", "ejs");
 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
 // Temporary Database until we create an actual one
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -104,6 +116,17 @@ app.post("/login", (req, res) => {
 app.post("/logout", (req, res) => {
   res.clearCookie("username", req.body.username);
   res.redirect("/urls")
+});
+
+app.post("/register", (req, res) => {
+  const userID = generateRandomString(4);
+  users[userID] = {
+    userID,
+    email: req.body.email,
+    password: req.body.password
+  }
+  res.cookie('user_id', userID);
+  res.redirect('/urls');
 });
 
 
