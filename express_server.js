@@ -70,6 +70,11 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/register", (req,res) => {
+  let templateVars = { username: req.cookies["username" ]};
+  res.render("urls_registration", templateVars);
+});
+
 // Deletes URL from database and redirects to /urls
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
@@ -100,6 +105,8 @@ app.post("/logout", (req, res) => {
   res.clearCookie("username", req.body.username);
   res.redirect("/urls")
 });
+
+
 
 // Making sure server is up on expected port
 app.listen(PORT, () => {

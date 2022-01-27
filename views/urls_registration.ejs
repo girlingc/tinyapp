@@ -12,35 +12,16 @@
   <body>
     <%- include('partials/_header') %>
     <main style="margin: 1em;">
-    <h3>My URLs</h3>
-    <table class="table">
-      <thread>
-        <tr>
-          <th scope="col">Short URL</th>
-          <th scope="col">Long URL</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Delete</th>
-        </tr>
-      </thread>
-      <tbody>
-        <% for(let url in urls) { %>
-          <tr>
-            <td><%= url%></td>
-            <td><%= urls[url]%></td>
-            <td>
-              <form method="GET" action="/urls/<%= url %>">
-                <button type="submit" class="btn btn-outline-info">Edit</button>
-              </form>
-            </td>
-            <td>
-              <form method="POST" action="/urls/<%= url %>/delete">
-                <button type="submit" class="btn btn-outline-danger">Delete</button>
-              </form>
-            </td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <h3>Create Account</h3>
+      <form action="/register" method="POST">
+        <div class="form-group mb-2">
+          <label for="email">Email address</label>
+          <input class="form-control mb-3" type="email" name="email" placeholder="Enter email" style="width: 300px">
+          <label for="password">Password</label>
+          <input class="form-control mb-3" type="password" name="password" placeholder="Enter password" style="width: 300px">
+          <button type="submit" class="btn btn-success">Register</button>
+        </div>
+      </form>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
