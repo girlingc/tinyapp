@@ -89,7 +89,7 @@ app.get("/urls/:shortURL", (req, res) => {
     res.render("urls_show", templateVars);
   } else {
     res.statusCode = 404;
-    res.send("<h2>404<br>You need to log in to access this URL</h2>");
+    res.render("error_not_logged", templateVars);
   }
 });
 
@@ -112,12 +112,13 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 // Redirects user to existing long URL
 // Need to find bug of why if statement is not working
 app.get("/u/:shortURL", (req, res) => {
+  let templateVars = { user: users[req.session.user_id] };
   const longURL = urlDatabase[req.params.shortURL].longURL;
   if (longURL) {
     res.redirect(longURL);
   } else {
     res.statusCode = 404;
-    res.send('<h2>404 Not Found<br>This short URL does not exist.</h2>')
+    res.render("error_url", templateVars)
   }
 });
 
@@ -137,15 +138,15 @@ app.post("/login", (req, res) => {
       res.redirect("/urls");
     }
   } else {
+    let templateVars = { user: users[req.session.user_id] };
     res.statusCode = 403;
-    res.send("<h2>403<br>The email or password in incorrect</h2>");
+    res.render("error_login", templateVars);
   }
 });
 
 app.post("/logout", (req, res) => {
   res.clearCookie("session");
   res.clearCookie("session.sig")
-  console.log("DATABASE", urlDatabase);
   res.redirect("/urls");
 });
 
@@ -169,12 +170,14 @@ app.post("/register", (req, res) => {
       req.session.user_id = userID;
       res.redirect("/urls");
     } else {
+      let templateVars = { user: users[req.session.user_id] };
       res.statusCode = 400;
-      res.send("<h2>400 Bad Request<br>That Email has already been registered</h2>");
+      res.render("error_duplicate_register", templateVars);
     }
   } else {
+    let templateVars = { user: users[req.session.user_id] };
     res.statusCode = 400;
-    res.send("<h2>400 Bad Request<br>Please enter a valid Email and Password</h2>");
+    res.render("error_invalid_register", templateVars)
   }
 });
 
