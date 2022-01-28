@@ -8,6 +8,7 @@ const cookieSession = require("cookie-session");
 const bcryptjs = require("bcryptjs")
 app.use(cookieSession({name: "session", secret: "the-walrus-walked-down-the-street"}));
 app.use(bodyParser.urlencoded({ extended: true }));
+const { getUserByEmail } = require("./helpers")
 
 // Generates random string for short URLs
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -26,15 +27,6 @@ app.set("view engine", "ejs");
 // Temporary Database until we create an actual one
 const users = {};
 const urlDatabase = {};
-
-const getUserByEmail = (email, database) => {
-  for (let user in database) {
-    if (database[user].email === email) {
-      return database[user];
-    }
-  }
-  return undefined;
-};
 
 // Function to build accumulate an owners URLs
 const userURLs = (id) => {
