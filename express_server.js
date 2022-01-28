@@ -31,7 +31,8 @@ const userURLs = (id) => {
 
 // Routing configuration
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  let templateVars = { user: users[req.session.user_id] };
+  res.render("homepage", templateVars);
 });
 
 app.get("/urls.json", (req, res) => {
@@ -68,8 +69,8 @@ app.post("/urls", (req, res) => {
 ////////
 // Create new URL
 app.get("/urls/new", (req, res) => {
+  let templateVars = { user: users[req.session.user_id] };
   if (req.session.user_id) {
-    let templateVars = { user: users[req.session.user_id] };
     res.render("urls_new", templateVars);
   } else {
     res.redirect("/login");
