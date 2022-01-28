@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const req = require("express/lib/request");
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcryptjs")
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
