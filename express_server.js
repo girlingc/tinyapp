@@ -24,27 +24,11 @@ const generateRandomString = (length) => {
 // Setting default engine as EJS
 app.set("view engine", "ejs");
 
-const users = {  "userRandomID": {
-  id: "userRandomID",
-  email: "user@example.com",
-  password: "purple-monkey-dinosaur"
-},
-"user2RandomID": {
-  id: "user2RandomID",
-  email: "user2@example.com",
-  password: "dishwasher-funk"
-}};
+const users = {};
+
+
 // Temporary Database until we create an actual one
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "aj481W"
-  },
-  i3BoGr: {
-    longURL:"https://www.google.ca",
-    userID: "aJ48lW"
-  }
-};
+const urlDatabase = {};
 
 const findEmail = (email, database) => {
   for (let user in database) {
@@ -169,7 +153,7 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   const user = findEmail(req.body.email, users);
   if (user) {
-    if (req.body.password === user.password) {
+    if (bcrypt.compareSync(req.body.password, user.password)) {
       res.cookie("user_id", user.userID);
       res.redirect("/urls");
     } else {
@@ -203,7 +187,7 @@ app.post("/register", (req, res) => {
       users[userID] = {
         userID,
         email: req.body.email,
-        password: req.body.password
+        password: bcrypt.hashSync(req.body.password, 10)
       };
       res.cookie("user_id", userID);
       res.redirect("/urls");
