@@ -23,14 +23,11 @@ const generateRandomString = (length) => {
 // Setting default engine as EJS
 app.set("view engine", "ejs");
 
-
-
-
 // Temporary Database until we create an actual one
 const users = {};
 const urlDatabase = {};
 
-const findEmail = (email, database) => {
+const getUserByEmail = (email, database) => {
   for (let user in database) {
     if (database[user].email === email) {
       return database[user];
@@ -151,7 +148,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const user = findEmail(req.body.email, users);
+  const user = getUserByEmail(req.body.email, users);
   if (user) {
     if (bcryptjs.compareSync(req.body.password, user.password)) {
       req.session.user_id = user.userID;
@@ -180,7 +177,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   if (req.body.email && req.body.password) {
-    if (!findEmail(req.body.email, users)) {
+    if (!getUserByEmail(req.body.email, users)) {
       const userID = generateRandomString(6);
       users[userID] = {
         userID,
