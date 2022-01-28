@@ -5,10 +5,10 @@ const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const req = require("express/lib/request");
 const cookieSession = require("cookie-session");
-const bcryptjs = require("bcryptjs")
+const bcryptjs = require("bcryptjs");
 app.use(cookieSession({name: "session", secret: "the-walrus-walked-down-the-street"}));
 app.use(bodyParser.urlencoded({ extended: true }));
-const { getUserByEmail, generateRandomString } = require("./helpers")
+const { getUserByEmail, generateRandomString } = require("./helpers");
 
 
 // Setting default engine as EJS
@@ -110,15 +110,16 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 ////////
 ////////
 // Redirects user to existing long URL
-// Need to find bug of why if statement is not working
 app.get("/u/:shortURL", (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-  if (longURL) {
+  const shortURL = req.params.shortURL
+  const urlObject = urlDatabase[shortURL];
+  if (urlObject) {
+    const longURL = urlObject.longURL
     res.redirect(longURL);
   } else {
     res.statusCode = 404;
-    res.render("error_url", templateVars)
+    res.render("error_url", templateVars);
   }
 });
 
@@ -146,7 +147,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie("session");
-  res.clearCookie("session.sig")
+  res.clearCookie("session.sig");
   res.redirect("/urls");
 });
 
@@ -177,7 +178,7 @@ app.post("/register", (req, res) => {
   } else {
     let templateVars = { user: users[req.session.user_id] };
     res.statusCode = 400;
-    res.render("error_invalid_register", templateVars)
+    res.render("error_invalid_register", templateVars);
   }
 });
 
