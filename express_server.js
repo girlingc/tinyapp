@@ -101,8 +101,16 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
+  let templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL].longURL,
+    user: users[req.session.user_id]
+  };
   if (req.session.user_id === urlDatabase[req.params.shortURL].userID) {
     delete urlDatabase[req.params.shortURL];
+  } else {
+    res.statusCode = 403
+    res.redirect("error_not_logged", templateVars)
   }
   res.redirect("/urls");
 });
@@ -129,7 +137,11 @@ app.get("/u/:shortURL", (req, res) => {
 // Logs in a user, or logs them out
 app.get("/login", (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
+  if (req.session.user_id) {
+    res.redirect("/urls")
+  } else{
   res.render("urls_login", templateVars);
+  }
 });
 
 app.post("/login", (req, res) => {
@@ -161,7 +173,11 @@ app.post("/logout", (req, res) => {
 // Registers a new user
 app.get("/register", (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
+  if (req.session.user_id) {
+    res.redirect("/urls")
+  } else {
   res.render("urls_registration", templateVars);
+  }
 });
 
 app.post("/register", (req, res) => {
@@ -186,6 +202,11 @@ app.post("/register", (req, res) => {
     res.render("error_invalid_register", templateVars);
   }
 });
+
+app.get("*", (req, res) => {
+  let templateVars = { user: users[req.session.user_id] };
+  res.render("page_not_found", templateVars);
+})
 
 // Making sure server is up on expected port
 app.listen(PORT, () => {
