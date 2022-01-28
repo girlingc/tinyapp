@@ -8,18 +8,8 @@ const cookieSession = require("cookie-session");
 const bcryptjs = require("bcryptjs")
 app.use(cookieSession({name: "session", secret: "the-walrus-walked-down-the-street"}));
 app.use(bodyParser.urlencoded({ extended: true }));
-const { getUserByEmail } = require("./helpers")
+const { getUserByEmail, generateRandomString } = require("./helpers")
 
-// Generates random string for short URLs
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const generateRandomString = (length) => {
-  let result = '';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
 
 // Setting default engine as EJS
 app.set("view engine", "ejs");
@@ -117,17 +107,17 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 
-
 ////////
 ////////
 // Redirects user to existing long URL
 // Need to find bug of why if statement is not working
 app.get("/u/:shortURL", (req, res) => {
-  if (urlDatabase[req.params.shortURL].longURL) {
-    res.redirect(urlDatabase[req.params.shortURL].longURL);
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  if (longURL) {
+    res.redirect(longURL);
   } else {
     res.statusCode = 404;
-    res.send('<h2>404 Not Found<br>This short URL does not exist in the database.</h2>');
+    res.send('<h2>404 Not Found<br>This short URL does not exist.</h2>')
   }
 });
 
