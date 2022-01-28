@@ -39,14 +39,13 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
 ////////
 ////////
-// Displays user's URL's
+// Displays user's URLs
 app.get("/urls", (req, res) => {
   const myURLs = userURLs(req.session.user_id);
   let templateVars = {
@@ -109,8 +108,8 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   if (req.session.user_id === urlDatabase[req.params.shortURL].userID) {
     delete urlDatabase[req.params.shortURL];
   } else {
-    res.statusCode = 403
-    res.redirect("error_not_logged", templateVars)
+    res.statusCode = 403;
+    res.redirect("error_not_logged", templateVars);
   }
   res.redirect("/urls");
 });
@@ -121,10 +120,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 // Redirects user to existing long URL
 app.get("/u/:shortURL", (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
-  const shortURL = req.params.shortURL
+  const shortURL = req.params.shortURL;
   const urlObject = urlDatabase[shortURL];
   if (urlObject) {
-    const longURL = urlObject.longURL
+    const longURL = urlObject.longURL;
     res.redirect(longURL);
   } else {
     res.statusCode = 404;
@@ -138,9 +137,9 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/login", (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
   if (req.session.user_id) {
-    res.redirect("/urls")
-  } else{
-  res.render("urls_login", templateVars);
+    res.redirect("/urls");
+  } else {
+    res.render("urls_login", templateVars);
   }
 });
 
@@ -174,9 +173,9 @@ app.post("/logout", (req, res) => {
 app.get("/register", (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
   if (req.session.user_id) {
-    res.redirect("/urls")
+    res.redirect("/urls");
   } else {
-  res.render("urls_registration", templateVars);
+    res.render("urls_registration", templateVars);
   }
 });
 
@@ -203,10 +202,13 @@ app.post("/register", (req, res) => {
   }
 });
 
+////////
+////////
+// Page not found if invalid URL
 app.get("*", (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
   res.render("page_not_found", templateVars);
-})
+});
 
 // Making sure server is up on expected port
 app.listen(PORT, () => {
