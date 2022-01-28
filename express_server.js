@@ -138,6 +138,10 @@ app.post("/login", (req, res) => {
     if (bcryptjs.compareSync(req.body.password, user.password)) {
       req.session.user_id = user.userID;
       res.redirect("/urls");
+    } else {
+      let templateVars = { user: users[req.session.user_id] };
+      res.statusCode = 403;
+      res.render("error_login", templateVars);
     }
   } else {
     let templateVars = { user: users[req.session.user_id] };
